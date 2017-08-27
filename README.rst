@@ -20,4 +20,4 @@ Contact
            \_______.com - web
     warren____________/ - email
 
-.. _YAML:: http://www.yaml.org/
+.. _YAML: http://www.yaml.org/

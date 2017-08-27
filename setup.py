@@ -15,13 +15,10 @@ setup(
     classifiers = [
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
-        'Intended Audience :: System Administrators',
-        'Environment :: Console',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 2.7',
-        'Topic :: Utilities'
     ],
     packages = ['configmate'],
     package_data = {
@@ -30,10 +27,10 @@ setup(
         ],
     },
     install_requires = [
-        'pyaml',
+        'pyyaml',
     ],
     extras_require = {
-        'AWS':  [
+        'AWS': [
             'boto3'
         ]
     },

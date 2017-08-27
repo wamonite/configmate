@@ -6,7 +6,7 @@ Python YAML loader where values can be calculated with a simple expression synta
 License
 -------
 
-Copyright (c) 2017 Warren Moore
+Copyright © 2017 Warren Moore
 
 This software may be redistributed under the terms of the MIT License.
 See the file LICENSE for details.

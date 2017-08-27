@@ -1,6 +1,15 @@
 configmate
 ==========
 
+.. image:: https://travis-ci.org/wamonite/configmate.svg?branch=master
+    :target: https://travis-ci.org/wamonite/configmate
+
+.. image:: https://codecov.io/gh/wamonite/configmate/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/wamonite/configmate
+
+.. image:: https://requires.io/github/wamonite/configmate/requirements.svg?branch=master
+    :target: https://requires.io/github/wamonite/configmate/requirements/?branch=master
+
 Python YAML_ loader where values can be calculated with a simple expression syntax.
 
 License

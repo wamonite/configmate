@@ -3,7 +3,7 @@
 from __future__ import print_function, unicode_literals
 from copy import deepcopy
 import os
-from .file_utils import read_yaml_file, read_yaml_string, FileException
+from .file_utils import read_yaml_file, read_yaml_string
 from collections import MutableMapping
 import logging
 
@@ -65,7 +65,7 @@ class ConfigFileLoader(object):
             try:
                 config_data = read_yaml_file(file_name)
 
-            except FileException:
+            except IOError:
                 continue
 
             if not isinstance(config_data, dict):
@@ -115,6 +115,7 @@ class ConfigStringLoader(object):
 
     def get_data(self):
         config_data = read_yaml_string(self._config_string)
+
         if config_data is None:
             raise ConfigLoadException(
                 "Unable to load config: {}".format(

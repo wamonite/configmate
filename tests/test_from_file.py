@@ -23,6 +23,7 @@ YAML_INVALID_DATA_LIST = [
     '---\n- 123\n',
     '---\n- true\n',
     '---\n- false\n',
+    '---\n- list\n      scanning: error\n',
 ]
 
 

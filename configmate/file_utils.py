@@ -4,6 +4,10 @@ from __future__ import print_function, unicode_literals
 import os
 import yaml
 import yaml.scanner
+import logging
+
+
+log = logging.getLogger('configmate.file_utils')
 
 
 def construct_yaml_str(self, node):
@@ -15,40 +19,37 @@ def construct_yaml_str(self, node):
 yaml.SafeLoader.add_constructor(u'tag:yaml.org,2002:str', construct_yaml_str)
 
 
-class FileException(Exception):
-    pass
-
-
 def read_yaml_file(file_name):
     """
-    Read a file as YAML, raising a FileException on error
+    Read a file as YAML
 
-    :return: parsed YAML data
+    :return: parsed YAML data, or None on error
     """
 
     try:
         with open(file_name, 'r') as file_object:
             return yaml.safe_load(file_object)
 
-    except IOError as e:
-        raise FileException(e)
+    except yaml.scanner.ScannerError as e:
+        log.error('Invalid YAML data: {}'.format(e))
 
-    except yaml.scanner.ScannerError:
-        raise FileException('Invalid YAML data')
+    return None
 
 
 def read_yaml_string(data):
     """
     Read a string as YAML
 
-    :return: parsed YAML data
+    :return: parsed YAML data, or None on error
     """
 
     try:
         return yaml.safe_load(data)
 
-    except yaml.scanner.ScannerError:
-        raise FileException('Invalid YAML data')
+    except yaml.scanner.ScannerError as e:
+        log.error('Invalid YAML data: {}'.format(e))
+
+    return None
 
 
 def get_path_names(file_name, path_list):

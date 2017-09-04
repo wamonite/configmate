@@ -38,6 +38,7 @@ def temp_dir(request):
     log.info('created temp dir: {}'.format(temp_dir_name))
 
     current_dir = os.getcwd()
+    os.chdir(temp_dir_name)
 
     def remove_temp_dir():
         if temp_dir_name:

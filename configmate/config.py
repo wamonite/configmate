@@ -3,7 +3,7 @@
 from __future__ import print_function, unicode_literals
 from copy import deepcopy
 import os
-from .file_utils import read_yaml_file, read_yaml_string
+from .file_utils import read_yaml_file, read_yaml_string, FileException
 from collections import MutableMapping
 import logging
 
@@ -62,18 +62,21 @@ class ConfigFileLoader(object):
         self._loaded_file_list = []
         for path in reversed(path_list):
             file_name = os.path.join(path, self._file_name)
-            config_data = read_yaml_file(file_name)
+            try:
+                config_data = read_yaml_file(file_name)
 
-            if config_data:
-                if not isinstance(config_data, dict):
-                    raise ConfigLoadFormatException(
-                        "Config file should contain a valid YAML dictionary: '{}'".format(
-                            file_name
-                        )
+            except FileException:
+                continue
+
+            if not isinstance(config_data, dict):
+                raise ConfigLoadFormatException(
+                    "Config file should contain a valid YAML dictionary: '{}'".format(
+                        file_name
                     )
+                )
 
-                config_data_list.append(config_data)
-                self._loaded_file_list.append(file_name)
+            config_data_list.append(config_data)
+            self._loaded_file_list.append(file_name)
 
         if not config_data_list:
             raise ConfigLoadException(

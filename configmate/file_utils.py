@@ -15,33 +15,40 @@ def construct_yaml_str(self, node):
 yaml.SafeLoader.add_constructor(u'tag:yaml.org,2002:str', construct_yaml_str)
 
 
+class FileException(Exception):
+    pass
+
+
 def read_yaml_file(file_name):
     """
-    Read a file as YAML
+    Read a file as YAML, raising a FileException on error
 
-    :return: None if the file could not be read and parsed
+    :return: parsed YAML data
     """
 
     try:
         with open(file_name, 'r') as file_object:
             return yaml.safe_load(file_object)
 
-    except (IOError, yaml.scanner.ScannerError):
-        return None
+    except IOError as e:
+        raise FileException(e)
+
+    except yaml.scanner.ScannerError:
+        raise FileException('Invalid YAML data')
 
 
 def read_yaml_string(data):
     """
     Read a string as YAML
 
-    :return: None if the string could not be parsed
+    :return: parsed YAML data
     """
 
     try:
         return yaml.safe_load(data)
 
     except yaml.scanner.ScannerError:
-        return None
+        raise FileException('Invalid YAML data')
 
 
 def get_path_names(file_name, path_list):

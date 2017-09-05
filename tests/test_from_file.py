@@ -1,7 +1,13 @@
 # -*- coding: utf-8 -*-
 
 import pytest
-from configmate import Config, ConfigException, ConfigLoadException, ConfigLoadFormatException
+from configmate import (
+    Config,
+    ConfigException,
+    ConfigLoadException,
+    ConfigLoadFormatException,
+)
+from configmate.config import ConfigStringLoader
 import os
 import yaml
 import uuid
@@ -52,7 +58,7 @@ def write_file(file_data, file_name = None, root_dir = None, dump_yaml = False):
 
 def test_error_on_missing_file():
     with pytest.raises(ConfigLoadException):
-        Config(config_file_name = MISSING_FILE_NAME)
+        Config(from_file = MISSING_FILE_NAME)
 
 
 @pytest.mark.parametrize(
@@ -61,12 +67,12 @@ def test_error_on_missing_file():
 )
 def test_error_on_invalid_data(temp_dir, invalid_data):
     with pytest.raises(ConfigLoadException):
-        Config(config_string = invalid_data)
+        Config(from_string = invalid_data)
 
     file_name = write_file(invalid_data, root_dir = temp_dir)
 
     with pytest.raises(ConfigLoadException):
-        Config(config_file_name = file_name)
+        Config(from_file = file_name)
 
 
 @pytest.mark.parametrize(
@@ -77,12 +83,12 @@ def test_error_on_including_invalid_data(temp_dir, invalid_data):
     write_file(invalid_data, file_name = 'invalid.yml', root_dir = temp_dir)
 
     with pytest.raises(ConfigLoadException):
-        Config(config_string = invalid_data)
+        Config(from_string = invalid_data)
 
     file_name = write_file('include:\n- invalid.yml', root_dir = temp_dir)
 
     with pytest.raises(ConfigLoadFormatException):
-        Config(config_file_name = file_name)
+        Config(from_file = file_name)
 
 
 @pytest.mark.parametrize(
@@ -93,12 +99,12 @@ def test_error_on_optionally_including_invalid_data(temp_dir, invalid_data):
     write_file(invalid_data, file_name = 'invalid.yml', root_dir = temp_dir)
 
     with pytest.raises(ConfigLoadFormatException):
-        Config(config_string = 'include_optional:\n- invalid.yml')
+        Config(from_string = 'include_optional:\n- invalid.yml')
 
     file_name = write_file('include_optional:\n- invalid.yml', root_dir = temp_dir)
 
     with pytest.raises(ConfigLoadFormatException):
-        Config(config_file_name = file_name)
+        Config(from_file = file_name)
 
 
 def test_including_files(temp_dir):
@@ -109,16 +115,17 @@ def test_including_files(temp_dir):
         'include:\n- {}\n'.format(YAML_LOOKUP_FILE_NAME),
         'include_optional:\n- {}\n'.format(YAML_LOOKUP_FILE_NAME)
     ):
-        config = Config(config_string = include_str)
+        config = Config(from_string = include_str)
         assert len(config) == len(file_data.keys())
+        assert config.sources == ConfigStringLoader.CONFIG_NAME
         for key, val in file_data.iteritems():
             assert config[key] == val
 
         file_name = write_file(include_str, root_dir = temp_dir)
 
-        config = Config(config_file_name = file_name)
-        assert len(config) == len(file_data.keys()) + 1
-        assert config['config_file_name'] == file_name
+        config = Config(from_file = file_name)
+        assert len(config) == len(file_data.keys())
+        assert config.sources == "'{}'".format(file_name)
         for key, val in file_data.iteritems():
             assert config[key] == val
 
@@ -126,8 +133,9 @@ def test_including_files(temp_dir):
 def test_including_missing_file(temp_dir):
     file_name = write_file('include_optional:\n- {}'.format(MISSING_FILE_NAME), root_dir = temp_dir)
 
-    config = Config(config_file_name = file_name)
-    assert config == {'config_file_name': file_name}
+    config = Config(from_file = file_name)
+    assert config == {}
+    assert config.sources == "'{}'".format(file_name)
 
 
 @pytest.mark.parametrize(
@@ -144,7 +152,7 @@ def test_error_on_invalid_include(temp_dir, test_data):
     file_name = write_file(test_data, root_dir = temp_dir)
 
     with pytest.raises(ConfigException):
-        Config(config_file_name = file_name)
+        Config(from_file = file_name)
 
 
 # TODO test path list

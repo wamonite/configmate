@@ -11,7 +11,6 @@ import logging
 log = logging.getLogger('configmate.config')
 
 
-CONFIG_FILE_NAME_KEY = 'config_file_name'
 CONFIG_INCLUDE_KEY = 'include'
 CONFIG_INCLUDE_OPTIONAL_KEY = 'include_optional'
 
@@ -137,8 +136,8 @@ class Config(MutableMapping):
 
     def __init__(
             self,
-            config_file_name = None,
-            config_string = None,
+            from_file = None,
+            from_string = None,
             path_list = None,
             defaults = None
     ):
@@ -150,14 +149,22 @@ class Config(MutableMapping):
 
         self._uuid_cache = {}
 
-        if config_file_name is not None:
-            self._config[CONFIG_FILE_NAME_KEY] = config_file_name
-            config_loader = ConfigFileLoader(config_file_name, path_list = path_list, initial_config = True)
+        source_list = []
+        if from_file is not None:
+            config_loader = ConfigFileLoader(from_file, path_list = path_list, initial_config = True)
             self._read_config(config_loader)
+            source_list.append(config_loader.names)
 
-        if config_string is not None:
-            config_loader = ConfigStringLoader(config_string, path_list = path_list, initial_config = True)
+        if from_string is not None:
+            config_loader = ConfigStringLoader(from_string, path_list = path_list, initial_config = True)
             self._read_config(config_loader)
+            source_list.append(config_loader.names)
+
+        self._sources = ','.join(source_list)
+
+    @property
+    def sources(self):
+        return self._sources
 
     def expand_parameter(self, value):
         # TODO process values

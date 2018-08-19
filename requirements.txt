@@ -1,6 +1,6 @@
 tox==3.2.1
 twine==1.11.0
 bumpversion==0.5.3
-sphinx==1.7.6
+sphinx==1.7.7
 sphinx-autobuild==0.7.1
 sphinx-rtd-theme==0.4.1

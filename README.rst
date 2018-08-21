@@ -13,10 +13,6 @@ configmate
     :target: https://codecov.io/gh/wamonite/configmate
     :alt: Code coverage
 
-.. image:: https://requires.io/github/wamonite/configmate/requirements.svg?branch=master
-    :target: https://requires.io/github/wamonite/configmate/requirements/?branch=master
-    :alt: Requirements status
-
 Python YAML_ loader where values can be calculated with a simple expression syntax.
 
 License
